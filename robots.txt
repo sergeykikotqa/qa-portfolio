@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://sergeykikotqa.github.io/qa-portfolio/sitemap.xml

@@ -1,0 +1,563 @@
+local_backend: true
+
+backend:
+  name: github
+  repo: your-github-org/qa-portfolio
+  branch: main
+  # Замените placeholders перед production publishing.
+  # base_url: https://auth.example.com
+  # auth_endpoint: /auth
+  # app_id: your-github-oauth-app-id
+
+media_folder: public/uploads
+public_folder: /uploads
+
+editor:
+  preview: false
+
+slug_hint: &slug_hint "Только латиница, цифры и дефисы, без пробелов и без кириллицы. Поле влияет на URL и имя файла. После первой публикации лучше не менять."
+slug_pattern: &slug_pattern
+  - "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  - "Используйте только латинские буквы, цифры и дефисы."
+absolute_url_pattern: &absolute_url_pattern
+  - "^https?:\\/\\/[^\\s]+$"
+  - "Укажите полный URL, начиная с http:// или https://."
+href_pattern: &href_pattern
+  - "^(\\/[^\\s]*)|(https?:\\/\\/[^\\s]+)|(mailto:[^\\s]+)|(tel:[^\\s]+)$"
+  - "Используйте относительный путь, http(s), mailto: или tel:."
+tech_hint: &tech_hint "Редко менять: влияет на глобальное поведение сайта."
+project_relation: &project_relation
+  widget: relation
+  collection: projects
+  search_fields: [title, slug]
+  value_field: slug
+  display_fields: [title]
+
+collections:
+  - name: projects
+    label: Проекты
+    label_singular: Проект
+    folder: content/projects
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: slug
+    slug: "{{slug}}"
+    summary: "{{title}} — {{slug}}"
+    fields:
+      - label: Название
+        name: title
+        widget: string
+        required: true
+        hint: "Не удаляйте проект, пока с ним связаны баг-репорты, тест-кейсы или чек-листы."
+      - label: Slug
+        name: slug
+        widget: string
+        required: true
+        pattern: *slug_pattern
+        hint: *slug_hint
+      - label: Полное описание
+        name: description
+        widget: text
+        required: true
+      - label: Краткое описание
+        name: shortDescription
+        widget: text
+        required: true
+      - label: Область тестирования
+        name: scope
+        widget: text
+        required: true
+      - label: Теги
+        name: tags
+        widget: list
+        required: true
+        min: 1
+        field:
+          label: Тег
+          name: tag
+          widget: string
+      - label: Показывать на главной
+        name: featured
+        widget: boolean
+        required: true
+        default: false
+        hint: "Включайте только для проектов, которые должны отображаться в блоке практики на главной."
+      - label: Порядок
+        name: order
+        widget: number
+        required: true
+        min: 0
+        value_type: int
+      - label: Дата публикации
+        name: publishedAt
+        widget: datetime
+        required: true
+        default: "{{now}}"
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: Видео-разборы
+        name: videos
+        widget: list
+        required: false
+        summary: "{{fields.title}}"
+        fields:
+          - label: Название
+            name: title
+            widget: string
+            required: true
+          - label: URL
+            name: url
+            widget: string
+            required: true
+            pattern: *absolute_url_pattern
+      - label: Дополнительные заметки
+        name: body
+        widget: markdown
+        required: false
+
+  - name: bugs
+    label: Баг-репорты
+    label_singular: Баг
+    folder: content/bugs
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: slug
+    slug: "{{slug}}"
+    summary: "{{title}} — {{slug}}"
+    fields:
+      - label: Заголовок
+        name: title
+        widget: string
+        required: true
+      - label: Slug
+        name: slug
+        widget: string
+        required: true
+        pattern: *slug_pattern
+        hint: *slug_hint
+      - label: Проект
+        name: project
+        required: true
+        <<: *project_relation
+      - label: Серьёзность
+        name: severity
+        widget: select
+        required: true
+        default: medium
+        options:
+          - { label: Critical, value: critical }
+          - { label: High, value: high }
+          - { label: Medium, value: medium }
+          - { label: Low, value: low }
+      - label: Приоритет
+        name: priority
+        widget: select
+        required: true
+        default: medium
+        options:
+          - { label: High, value: high }
+          - { label: Medium, value: medium }
+          - { label: Low, value: low }
+      - label: Статус
+        name: status
+        widget: select
+        required: true
+        default: open
+        options:
+          - { label: Open, value: open }
+          - { label: In Progress, value: in_progress }
+          - { label: Closed, value: closed }
+          - { label: Reopened, value: reopened }
+      - label: Краткое описание
+        name: summary
+        widget: text
+        required: true
+      - label: Окружение
+        name: environment
+        widget: text
+        required: true
+      - label: Шаги воспроизведения
+        name: steps
+        widget: list
+        required: true
+        min: 1
+        field:
+          label: Шаг
+          name: step
+          widget: string
+      - label: Ожидаемый результат
+        name: expected
+        widget: text
+        required: true
+      - label: Фактический результат
+        name: actual
+        widget: text
+        required: true
+      - label: Скриншоты
+        name: screenshots
+        widget: list
+        required: false
+        default: []
+        hint: "Обычно достаточно 1–3 скриншотов. Первый скрин считается основным."
+        field:
+          label: Скриншот
+          name: screenshot
+          widget: image
+      - label: Ссылка на видео
+        name: videoUrl
+        widget: string
+        required: false
+        pattern: *absolute_url_pattern
+      - label: Связанные ссылки
+        name: relatedLinks
+        widget: list
+        required: false
+        summary: "{{fields.label}}"
+        fields:
+          - label: Подпись
+            name: label
+            widget: string
+            required: true
+          - label: URL
+            name: url
+            widget: string
+            required: true
+            pattern: *absolute_url_pattern
+      - label: Дата публикации
+        name: publishedAt
+        widget: datetime
+        required: true
+        default: "{{now}}"
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: Дополнительные заметки
+        name: body
+        widget: markdown
+        required: false
+
+  - name: test-cases
+    label: Тест-кейсы
+    label_singular: Тест-кейс
+    folder: content/test-cases
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: slug
+    slug: "{{slug}}"
+    summary: "{{caseId}} — {{title}}"
+    fields:
+      - label: Название
+        name: title
+        widget: string
+        required: true
+      - label: Slug
+        name: slug
+        widget: string
+        required: true
+        pattern: *slug_pattern
+        hint: *slug_hint
+      - label: ID кейса
+        name: caseId
+        widget: string
+        required: true
+      - label: Проект
+        name: project
+        required: true
+        <<: *project_relation
+      - label: Категория
+        name: category
+        widget: string
+        required: true
+      - label: Краткое описание
+        name: summary
+        widget: text
+        required: false
+      - label: Шаги
+        name: steps
+        widget: list
+        required: true
+        min: 1
+        field:
+          label: Шаг
+          name: step
+          widget: string
+      - label: Ожидаемый результат
+        name: expectedResult
+        widget: text
+        required: true
+      - label: Дата публикации
+        name: publishedAt
+        widget: datetime
+        required: true
+        default: "{{now}}"
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: Дополнительные заметки
+        name: body
+        widget: markdown
+        required: false
+
+  - name: checklists
+    label: Чек-листы
+    label_singular: Чек-лист
+    folder: content/checklists
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: slug
+    slug: "{{slug}}"
+    summary: "{{title}} — {{slug}}"
+    fields:
+      - label: Название
+        name: title
+        widget: string
+        required: true
+      - label: Slug
+        name: slug
+        widget: string
+        required: true
+        pattern: *slug_pattern
+        hint: *slug_hint
+      - label: Проект
+        name: project
+        required: true
+        <<: *project_relation
+      - label: Категория
+        name: category
+        widget: string
+        required: true
+      - label: Описание
+        name: description
+        widget: text
+        required: false
+      - label: Пункты
+        name: items
+        widget: list
+        required: true
+        min: 1
+        field:
+          label: Пункт
+          name: item
+          widget: string
+      - label: Дата публикации
+        name: publishedAt
+        widget: datetime
+        required: true
+        default: "{{now}}"
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: Дополнительные заметки
+        name: body
+        widget: markdown
+        required: false
+
+  - name: updates
+    label: Обновления
+    label_singular: Обновление
+    folder: content/updates
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: slug
+    slug: "{{slug}}"
+    summary: "{{title}} — {{date}}"
+    fields:
+      - label: Заголовок
+        name: title
+        widget: string
+        required: true
+      - label: Slug
+        name: slug
+        widget: string
+        required: true
+        pattern: *slug_pattern
+        hint: *slug_hint
+      - label: Дата
+        name: date
+        widget: datetime
+        required: true
+        default: "{{now}}"
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: Тип обновления
+        name: type
+        widget: select
+        required: true
+        default: general
+        options:
+          - { label: Проект, value: project }
+          - { label: Баг, value: bug }
+          - { label: Тест-кейс, value: test-case }
+          - { label: Чек-лист, value: checklist }
+          - { label: Общее, value: general }
+      - label: Описание
+        name: description
+        widget: text
+        required: true
+      - label: Дополнительные заметки
+        name: body
+        widget: markdown
+        required: false
+
+  - name: settings
+    label: Настройки
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: site-settings
+        label: Настройки сайта
+        file: content/settings/site.json
+        format: json
+        fields:
+          - label: Описание сайта
+            name: siteDescription
+            widget: text
+            required: true
+          - label: Hero-блок
+            name: hero
+            widget: object
+            fields:
+              - label: Заголовок
+                name: title
+                widget: string
+                required: true
+              - label: Подзаголовок
+                name: subtitle
+                widget: text
+                required: true
+              - label: Текст кнопки
+                name: ctaLabel
+                widget: string
+                required: true
+              - label: Ссылка кнопки
+                name: ctaHref
+                widget: string
+                required: true
+                pattern: *href_pattern
+          - label: Главная страница
+            name: home
+            widget: object
+            fields:
+              - label: Заголовок блока проектов
+                name: featuredProjectsTitle
+                widget: string
+                required: true
+              - label: Заголовок блока навыков
+                name: skillsTitle
+                widget: string
+                required: true
+              - label: Заголовок блока обновлений
+                name: updatesTitle
+                widget: string
+                required: true
+              - label: Навыки
+                name: skills
+                widget: list
+                required: true
+                min: 3
+                max: 3
+                summary: "{{fields.title}}"
+                fields:
+                  - label: Название
+                    name: title
+                    widget: string
+                    required: true
+                  - label: Описание
+                    name: description
+                    widget: text
+                    required: true
+          - label: Footer
+            name: footer
+            widget: object
+            fields:
+              - label: Описание
+                name: description
+                widget: text
+                required: true
+              - label: Контакты
+                name: contacts
+                widget: list
+                required: true
+                min: 1
+                summary: "{{fields.label}}"
+                fields:
+                  - label: Подпись
+                    name: label
+                    widget: string
+                    required: true
+                  - label: Ссылка
+                    name: href
+                    widget: string
+                    required: true
+                    pattern: *href_pattern
+              - label: Стек
+                name: stack
+                widget: list
+                required: true
+                min: 1
+                hint: *tech_hint
+                field:
+                  label: Элемент стека
+                  name: stackItem
+                  widget: string
+          - label: Название сайта
+            name: siteName
+            widget: string
+            required: true
+          - label: URL сайта
+            name: siteUrl
+            widget: string
+            required: true
+            hint: *tech_hint
+            pattern: *absolute_url_pattern
+          - label: Локаль
+            name: locale
+            widget: string
+            required: true
+            hint: *tech_hint
+          - label: SEO
+            name: seo
+            widget: object
+            hint: *tech_hint
+            fields:
+              - label: Базовый title
+                name: defaultTitle
+                widget: string
+                required: true
+              - label: Шаблон title
+                name: titleTemplate
+                widget: string
+                required: true
+              - label: Базовое описание
+                name: defaultDescription
+                widget: text
+                required: true
+              - label: Open Graph изображение
+                name: openGraphImage
+                widget: image
+                required: false
+          - label: Навигация
+            name: navigation
+            widget: list
+            required: true
+            min: 1
+            hint: *tech_hint
+            summary: "{{fields.label}}"
+            fields:
+              - label: Название
+                name: label
+                widget: string
+                required: true
+              - label: Ссылка
+                name: href
+                widget: string
+                required: true
+                pattern: *href_pattern
