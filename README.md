@@ -90,22 +90,54 @@ npm run content:deps
 - какие проекты заблокированы связанными сущностями
 - какие `bugs`, `test-cases` и `checklists` мешают безопасному удалению
 
-## Deploy
+## Deploy To GitHub Pages
 
-### Netlify
+Проект подготовлен под GitHub Pages для репозитория `qa-portfolio`.
 
-Для текущего проекта `netlify.toml` не нужен: Netlify умеет подхватывать Next.js автоматически.
+Production URL:
 
-Если Netlify запросит настройки вручную:
+- [https://sergeykikotqa.github.io/qa-portfolio/](https://sergeykikotqa.github.io/qa-portfolio/)
 
-- build command: `npm run build`
-- publish directory: не задавать вручную
+Workflow:
 
-Для production CMS на Netlify можно использовать отдельный вариант [public/admin/config.netlify-git-gateway.yml](C:\Users\adida\Desktop\site\public\admin\config.netlify-git-gateway.yml) и включить `Identity + Git Gateway` в Netlify UI.
+1. Добавить или обновить контент локально через CMS.
+2. Закоммитить изменения и сделать `git push`.
+3. Собрать статический экспорт:
 
-### Vercel
+```bash
+npm run build
+```
 
-Проект также совместим с Vercel. Достаточно подключить GitHub-репозиторий и использовать `npm run build`.
+4. Опубликовать содержимое `out` в ветку `gh-pages`:
+
+```bash
+npm run deploy
+```
+
+Что делает конфиг:
+
+- production build использует `basePath` и `assetPrefix` = `/qa-portfolio`
+- `out/.nojekyll` добавляется автоматически через `public/.nojekyll`, чтобы GitHub Pages корректно раздавал `_next`
+- detail routes для багов и проектов экспортируются как статические директории с `index.html`
+
+Что проверить после первого деплоя:
+
+- открывается главная по URL репозитория
+- работают `/bugs/` и `/projects/qamanual/`
+- favicon, стили и шрифты загружаются с `/qa-portfolio/_next/...`
+- `robots.txt`, `sitemap.xml` и OG image указывают на GitHub Pages URL
+
+## CMS в production
+
+`/admin` продолжает экспортироваться как статическая страница и доступен в `out/admin/index.html`, но на GitHub Pages это не рабочий production backend для CMS.
+
+Рабочий сценарий такой:
+
+- локально: [http://localhost:3000/admin](http://localhost:3000/admin)
+- локально через `npm run dev:cms`
+- publish контента идёт локально, затем изменения коммитятся в git и пушатся в репозиторий
+
+На GitHub Pages `/admin` можно открыть как статическую страницу, но без локального proxy и backend workflow он не предназначен для реального редактирования контента.
 
 ## Проверка
 

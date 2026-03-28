@@ -8,6 +8,7 @@
     "dev:cms": "concurrently -k -n web,cms \"npm:dev\" \"npm:cms:proxy\"",
     "content:deps": "node scripts/content-deps.mjs",
     "build": "next build",
+    "deploy": "gh-pages -d out",
     "start": "next start",
     "lint": "eslint"
   },
@@ -37,6 +38,7 @@
     "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
+    "gh-pages": "^6.3.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
