@@ -8,7 +8,7 @@
     "dev:cms": "concurrently -k -n web,cms \"npm:dev\" \"npm:cms:proxy\"",
     "content:deps": "node scripts/content-deps.mjs",
     "build": "next build",
-    "deploy": "gh-pages -d out",
+    "deploy": "gh-pages -d out --dotfiles",
     "start": "next start",
     "lint": "eslint"
   },
