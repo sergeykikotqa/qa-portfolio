@@ -1,0 +1,23 @@
+
+> qa-portfolio@0.1.0 dev:cms
+> concurrently -k -n web,cms "npm:dev" "npm:cms:proxy"
+
+[web] 
+[web] > qa-portfolio@0.1.0 dev
+[web] > next dev
+[web] 
+[cms] 
+[cms] > qa-portfolio@0.1.0 cms:proxy
+[cms] > npx decap-server
+[cms] 
+[web] ▲ Next.js 16.2.1 (Turbopack)
+[web] - Local:         http://localhost:3000
+[web] - Network:       http://172.19.0.1:3000
+[web] ✓ Ready in 387ms
+[web] 
+[cms] [32minfo[39m: Decap CMS File System Proxy Server configured with C:\Users\adida\Desktop\site
+[cms] [32minfo[39m: Decap CMS Proxy Server listening on port 8081
+[web] [?25h
+[web] npm run dev exited with code 1
+--> Sending SIGTERM to other processes..
+[cms] npm run cms:proxy exited with code 1

@@ -1,0 +1,28 @@
+
+> qa-portfolio@0.1.0 dev:cms
+> concurrently -k -n web,cms "npm:dev" "npm:cms:proxy"
+
+[web] 
+[web] > qa-portfolio@0.1.0 dev
+[web] > next dev
+[web] 
+[cms] 
+[cms] > qa-portfolio@0.1.0 cms:proxy
+[cms] > npx decap-server
+[cms] 
+[web] ▲ Next.js 16.2.1 (Turbopack)
+[web] - Local:         http://localhost:3000
+[web] - Network:       http://172.19.0.1:3000
+[web] ✓ Ready in 389ms
+[web] 
+[web]  GET /checklists 200 in 498ms (next.js: 186ms, application-code: 312ms)
+[cms] [32minfo[39m: Decap CMS File System Proxy Server configured with C:\Users\adida\Desktop\site
+[cms] [32minfo[39m: Decap CMS Proxy Server listening on port 8081
+[web] ✓ Compiled in 40ms
+[web]  GET / 200 in 234ms (next.js: 65ms, application-code: 169ms)
+[web]  GET /bugs 200 in 147ms (next.js: 29ms, application-code: 118ms)
+[web]  GET /projects/first-learning-project 200 in 638ms (next.js: 536ms, generate-params: 493ms, application-code: 102ms)
+[web]  GET /bugs/submit-button-active-with-empty-required-field 200 in 653ms (next.js: 545ms, generate-params: 499ms, application-code: 108ms)
+[cms] npm run cms:proxy exited with code 4294967295
+--> Sending SIGTERM to other processes..
+[web] npm run dev exited with code 1

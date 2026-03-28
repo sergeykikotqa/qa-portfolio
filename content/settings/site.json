@@ -1,0 +1,51 @@
+{
+  "siteName": "QA Portfolio",
+  "siteDescription": "Портфолио Junior QA Engineer с практикой ручного тестирования, баг-репортами, тест-кейсами и чек-листами.",
+  "siteUrl": "https://qa-portfolio.example.com",
+  "locale": "ru-RU",
+  "seo": {
+    "defaultTitle": "QA Portfolio",
+    "titleTemplate": "%s | QA Portfolio",
+    "defaultDescription": "Портфолио Junior QA Engineer: баг-репорты, тест-кейсы, чек-листы и практика ручного тестирования.",
+    "openGraphImage": "/uploads/og-cover.svg"
+  },
+  "navigation": [
+    { "label": "Главная", "href": "/" },
+    { "label": "Баг-репорты", "href": "/bugs" },
+    { "label": "Тест-кейсы", "href": "/test-cases" },
+    { "label": "Чек-листы", "href": "/checklists" }
+  ],
+  "hero": {
+    "title": "Junior QA Engineer (Manual)",
+    "subtitle": "Тестирую веб-приложения. Оформляю баг-репорты, тест-кейсы и чек-листы.",
+    "ctaLabel": "Смотреть баг-репорты",
+    "ctaHref": "/bugs"
+  },
+  "home": {
+    "featuredProjectsTitle": "Практика",
+    "skillsTitle": "Что я умею",
+    "updatesTitle": "Последние обновления",
+    "skills": [
+      {
+        "title": "Баг-репорты",
+        "description": "Фиксирую дефекты с понятным summary, шагами воспроизведения и ожидаемым результатом."
+      },
+      {
+        "title": "Тест-кейсы",
+        "description": "Описываю позитивные и негативные сценарии, чтобы покрытие оставалось воспроизводимым."
+      },
+      {
+        "title": "Чек-листы",
+        "description": "Собираю компактные наборы проверок для smoke, regression и exploratory-сессий."
+      }
+    ]
+  },
+  "footer": {
+    "description": "Портфолио Junior QA Engineer с практическими артефактами ручного тестирования.",
+    "stack": ["Next.js App Router", "TypeScript", "Tailwind CSS", "shadcn/ui", "Decap CMS"],
+    "contacts": [
+      { "label": "hello@qa-portfolio.dev", "href": "mailto:hello@qa-portfolio.dev" },
+      { "label": "Telegram", "href": "https://t.me/qa_portfolio" }
+    ]
+  }
+}
