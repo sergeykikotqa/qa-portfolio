@@ -1,12 +1,12 @@
 {
-  "siteName": "Sergey Kikot | QA Portfolio",
-  "siteDescription": "Портфолио Сергея Кикота, Junior QA Engineer: баг-репорты, тест-кейсы, чек-листы и практика ручного тестирования.",
+  "siteName": "Сергей Кикоть | QA Portfolio",
+  "siteDescription": "Баг-репорты, тест-кейсы, чек-листы и практика ручного тестирования.",
   "siteUrl": "https://qa-portfolio.example.com",
   "locale": "ru-RU",
   "seo": {
-    "defaultTitle": "Sergey Kikot | QA Portfolio",
-    "titleTemplate": "%s | Sergey Kikot | QA Portfolio",
-    "defaultDescription": "Портфолио Сергея Кикота: баг-репорты, тест-кейсы, чек-листы и практика ручного тестирования.",
+    "defaultTitle": "Сергей Кикоть | QA Portfolio",
+    "titleTemplate": "%s | Сергей Кикоть | QA Portfolio",
+    "defaultDescription": "Баг-репорты, тест-кейсы, чек-листы и практика ручного тестирования.",
     "openGraphImage": "/uploads/og-cover.svg"
   },
   "navigation": [
@@ -41,7 +41,7 @@
     ]
   },
   "footer": {
-    "description": "QA-портфолио Сергея Кикота с практическими артефактами ручного тестирования.",
+    "description": "QA-портфолио с практическими артефактами ручного тестирования.",
     "stack": ["Next.js App Router", "TypeScript", "Tailwind CSS", "shadcn/ui", "Decap CMS"],
     "contacts": [
       { "label": "Email", "href": "mailto:sergeykikot.qa@gmail.com" },
