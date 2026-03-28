@@ -3,6 +3,8 @@ import type { MetadataRoute } from "next";
 import { getBugSlugs, getProjectSlugs } from "@/lib/content/queries";
 import { metadataBaseUrl, navigationItems } from "@/lib/site-config";
 
+export const dynamic = "force-static";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [bugSlugs, projectSlugs] = await Promise.all([getBugSlugs(), getProjectSlugs()]);
   const now = new Date();
