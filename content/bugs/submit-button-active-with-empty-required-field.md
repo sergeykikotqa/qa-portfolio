@@ -1,7 +1,7 @@
 ---
 title: Кнопка отправки формы активна при пустом обязательном поле
 slug: submit-button-active-with-empty-required-field
-project: first-learning-project
+project: qamanual
 severity: medium
 priority: medium
 status: open

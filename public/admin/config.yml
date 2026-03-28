@@ -49,6 +49,7 @@ collections:
         name: title
         widget: string
         required: true
+        hint: "Не удаляйте проект, пока с ним связаны баг-репорты, тест-кейсы или чек-листы."
       - label: Slug
         name: slug
         widget: string

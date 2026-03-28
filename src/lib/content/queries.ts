@@ -101,33 +101,99 @@ function sortUpdates(updates: UpdateItem[]) {
   return [...updates].sort((left, right) => compareDateDesc(left.date, right.date));
 }
 
-function assertProjectReferences<
-  TEntry extends {
-    slug: string;
-    project: string;
-  },
->(entries: TEntry[], projects: Project[], collection: "bugs" | "test-cases" | "checklists") {
-  const projectSlugs = new Set(projects.map((project) => project.slug));
-  const collectionDirectory = MARKDOWN_COLLECTION_DIRECTORIES[collection];
+type ProjectDependencies = {
+  projectSlug: string;
+  bugs: Bug[];
+  testCases: TestCase[];
+  checklists: Checklist[];
+};
 
-  for (const entry of entries) {
-    if (!projectSlugs.has(entry.project)) {
-      const availableProjects = projects.map((project) => project.slug).sort().join(", ");
-      const filePath = path.join(collectionDirectory, `${entry.slug}.md`);
+type ValidatedProjectCollections = {
+  projects: Project[];
+  bugs: Bug[];
+  testCases: TestCase[];
+  checklists: Checklist[];
+};
 
-      throw new ContentValidationError(
-        `Invalid project reference "${entry.project}" in ${collection} entry "${entry.slug}". Expected one of: ${availableProjects || "no published projects"}.`,
-        { collection, filePath },
-      );
-    }
-  }
+function collectProjectDependencies(
+  projectSlug: string,
+  bugs: Bug[],
+  testCases: TestCase[],
+  checklists: Checklist[],
+): ProjectDependencies {
+  return {
+    projectSlug,
+    bugs: bugs.filter((bug) => bug.project === projectSlug),
+    testCases: testCases.filter((testCase) => testCase.project === projectSlug),
+    checklists: checklists.filter((checklist) => checklist.project === projectSlug),
+  };
 }
+
+function formatBlockingEntries(label: string, entries: { slug: string }[]) {
+  return entries.length ? `${label}: ${entries.map((entry) => entry.slug).join(", ")}` : null;
+}
+
+function buildProjectDeletionError(dependencies: ProjectDependencies) {
+  const blockingCollections = [
+    formatBlockingEntries("bugs", dependencies.bugs),
+    formatBlockingEntries("test-cases", dependencies.testCases),
+    formatBlockingEntries("checklists", dependencies.checklists),
+  ].filter(Boolean);
+
+  const filePath = path.join(
+    MARKDOWN_COLLECTION_DIRECTORIES.projects,
+    `${dependencies.projectSlug}.md`,
+  );
+
+  return new ContentValidationError(
+    `Project "${dependencies.projectSlug}" cannot be deleted while related content still exists. Remove or re-link the blocking entries first. Blocking collections: ${blockingCollections.join("; ")}.`,
+    {
+      collection: "projects",
+      filePath,
+    },
+  );
+}
+
+const getValidatedProjectCollections = cache(
+  async (): Promise<ValidatedProjectCollections> => {
+    const [projects, bugs, testCases, checklists] = await Promise.all([
+      loadMarkdownCollection("projects"),
+      loadMarkdownCollection("bugs"),
+      loadMarkdownCollection("test-cases"),
+      loadMarkdownCollection("checklists"),
+    ]);
+    const projectSlugs = new Set(projects.map((project) => project.slug));
+    const referencedProjectSlugs = new Set(
+      [...bugs, ...testCases, ...checklists].map((entry) => entry.project),
+    );
+    const missingProjectSlugs = [...referencedProjectSlugs]
+      .filter((projectSlug) => !projectSlugs.has(projectSlug))
+      .sort();
+
+    if (missingProjectSlugs.length) {
+      const dependencies = collectProjectDependencies(
+        missingProjectSlugs[0],
+        bugs,
+        testCases,
+        checklists,
+      );
+
+      throw buildProjectDeletionError(dependencies);
+    }
+
+    return {
+      projects: sortProjects(projects),
+      bugs: sortBugs(bugs),
+      testCases: sortTestCases(testCases),
+      checklists: sortChecklists(checklists),
+    };
+  },
+);
 
 export const getSiteSettings = cache(async (): Promise<SiteSettings> => siteSettings);
 
 export const getAllProjects = cache(async (): Promise<Project[]> => {
-  const projects = await loadMarkdownCollection("projects");
-  return sortProjects(projects);
+  return (await getValidatedProjectCollections()).projects;
 });
 
 export const getProjectBySlug = cache(async (slug: string): Promise<Project | null> => {
@@ -141,14 +207,7 @@ export const getProjectSlugs = cache(async (): Promise<string[]> => {
 });
 
 export const getAllBugs = cache(async (): Promise<Bug[]> => {
-  const [bugs, projects] = await Promise.all([
-    loadMarkdownCollection("bugs"),
-    getAllProjects(),
-  ]);
-
-  assertProjectReferences(bugs, projects, "bugs");
-
-  return sortBugs(bugs);
+  return (await getValidatedProjectCollections()).bugs;
 });
 
 export const getBugBySlug = cache(async (slug: string): Promise<Bug | null> => {
@@ -162,25 +221,11 @@ export const getBugSlugs = cache(async (): Promise<string[]> => {
 });
 
 export const getAllTestCases = cache(async (): Promise<TestCase[]> => {
-  const [testCases, projects] = await Promise.all([
-    loadMarkdownCollection("test-cases"),
-    getAllProjects(),
-  ]);
-
-  assertProjectReferences(testCases, projects, "test-cases");
-
-  return sortTestCases(testCases);
+  return (await getValidatedProjectCollections()).testCases;
 });
 
 export const getAllChecklists = cache(async (): Promise<Checklist[]> => {
-  const [checklists, projects] = await Promise.all([
-    loadMarkdownCollection("checklists"),
-    getAllProjects(),
-  ]);
-
-  assertProjectReferences(checklists, projects, "checklists");
-
-  return sortChecklists(checklists);
+  return (await getValidatedProjectCollections()).checklists;
 });
 
 export const getAllUpdates = cache(async (): Promise<UpdateItem[]> => {
@@ -213,20 +258,17 @@ export const getSiteStats = cache(async (): Promise<SiteStats> => {
 
 export const getProjectAggregate = cache(
   async (slug: string): Promise<ProjectAggregate | null> => {
-    const [project, bugs, testCases, checklists] = await Promise.all([
+    const [project, dependencies] = await Promise.all([
       getProjectBySlug(slug),
-      getAllBugs(),
-      getAllTestCases(),
-      getAllChecklists(),
+      getProjectDependencies(slug),
     ]);
 
     if (!project) {
       return null;
     }
 
-    const relatedBugs = bugs.filter((bug) => bug.project === slug);
-    const relatedTestCases = testCases.filter((testCase) => testCase.project === slug);
-    const relatedChecklists = checklists.filter((checklist) => checklist.project === slug);
+    const { bugs: relatedBugs, testCases: relatedTestCases, checklists: relatedChecklists } =
+      dependencies;
 
     return {
       project,
@@ -243,6 +285,14 @@ export const getProjectAggregate = cache(
         ),
       },
     };
+  },
+);
+
+export const getProjectDependencies = cache(
+  async (projectSlug: string): Promise<ProjectDependencies> => {
+    const { bugs, testCases, checklists } = await getValidatedProjectCollections();
+
+    return collectProjectDependencies(projectSlug, bugs, testCases, checklists);
   },
 );
 

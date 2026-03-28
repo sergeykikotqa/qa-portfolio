@@ -64,6 +64,7 @@ npm run cms:proxy
 - `frontmatter` обязателен
 - markdown `body` опционален
 - баги, тест-кейсы и чек-листы должны ссылаться на существующий `project` slug
+- проект нельзя удалять, пока к нему привязаны bugs, test-cases или checklists
 
 ## Decap CMS
 
@@ -74,6 +75,20 @@ npm run cms:proxy
 - [public/admin/config.netlify-git-gateway.yml](C:\Users\adida\Desktop\site\public\admin\config.netlify-git-gateway.yml)
 
 Локально CMS работает через `local_backend: true`, поэтому для publish нужен git-репозиторий и запущенный proxy. Если proxy не поднят, `/admin` откроется, но Decap переключится на fallback-сценарий с GitHub login.
+
+## Проверка зависимостей проекта
+
+Перед удалением проекта запустите:
+
+```bash
+npm run content:deps
+```
+
+Команда проходит по всем проектам и показывает:
+
+- какие проекты свободны
+- какие проекты заблокированы связанными сущностями
+- какие `bugs`, `test-cases` и `checklists` мешают безопасному удалению
 
 ## Deploy
 
