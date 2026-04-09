@@ -238,6 +238,11 @@ export function BugsExplorer({
         bug.body ?? "",
         bug.project,
         projectTitle,
+        bug.source,
+        bug.sourceRepo ?? "",
+        bug.sourceIssueUrl ?? "",
+        bug.labelsRaw.join(" "),
+        bug.labelsNormalized.join(" "),
       ]
         .join(" ")
         .toLowerCase();
@@ -256,7 +261,11 @@ export function BugsExplorer({
   return (
     <div className="space-y-8">
       <section className="grid gap-4 md:grid-cols-4">
-        <StatCard label="Всего багов" value={String(bugs.length)} helper="Все записи из markdown" />
+        <StatCard
+          label="Всего багов"
+          value={String(bugs.length)}
+          helper="Локальные записи и GitHub issues"
+        />
         <StatCard
           label="Critical"
           value={String(bugs.filter((bug) => bug.severity === "critical").length)}

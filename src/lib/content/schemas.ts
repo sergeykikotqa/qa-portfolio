@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import type {
   BugFrontmatter,
+  BugOverride,
   ChecklistFrontmatter,
   CollectionFrontmatterMap,
   ContactLink,
@@ -32,6 +33,10 @@ const requiredString = z.string().trim().min(1);
 const slugSchema = requiredString.regex(
   slugPattern,
   "Slug must use lowercase latin letters, numbers, and hyphens only.",
+);
+const isoDateTimeSchema = requiredString.refine(
+  (value) => !Number.isNaN(Date.parse(value)),
+  "Date-time must be a valid ISO 8601 string.",
 );
 const dateStringSchema = requiredString.regex(
   datePattern,
@@ -139,6 +144,23 @@ export const bugFrontmatterSchema: z.ZodType<BugFrontmatter> = z.object({
   videoUrl: z.url().optional(),
   relatedLinks: z.array(relatedLinkSchema).optional(),
   publishedAt: dateStringSchema,
+  updatedAt: isoDateTimeSchema.optional(),
+  importedAt: isoDateTimeSchema.optional(),
+  source: z.enum(["local", "github"]).optional(),
+  generated: z.boolean().optional(),
+  sourceRepo: requiredString.optional(),
+  sourceIssueNumber: z.number().int().positive().optional(),
+  sourceIssueUrl: z.url().optional(),
+  labelsRaw: z.array(requiredString).default([]),
+  labelsNormalized: z.array(requiredString).default([]),
+  portfolioNote: requiredString.optional(),
+});
+
+export const bugOverrideSchema: z.ZodType<BugOverride> = z.object({
+  screenshots: z.array(z.url()).optional(),
+  videoUrl: z.url().optional(),
+  relatedLinks: z.array(relatedLinkSchema).optional(),
+  portfolioNote: requiredString.optional(),
 });
 
 export const testCaseFrontmatterSchema: z.ZodType<TestCaseFrontmatter> = z.object({

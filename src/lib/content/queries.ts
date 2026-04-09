@@ -12,6 +12,7 @@ import type {
   TestCase,
   UpdateItem,
 } from "@/types/content";
+import { loadMergedBugs } from "@/lib/content/bugs";
 import { ContentValidationError } from "@/lib/content/markdown";
 import { MARKDOWN_COLLECTION_DIRECTORIES, loadMarkdownCollection } from "@/lib/content/loaders";
 import { siteSettings } from "@/lib/site-config";
@@ -158,7 +159,7 @@ const getValidatedProjectCollections = cache(
   async (): Promise<ValidatedProjectCollections> => {
     const [projects, bugs, testCases, checklists] = await Promise.all([
       loadMarkdownCollection("projects"),
-      loadMarkdownCollection("bugs"),
+      loadMergedBugs(),
       loadMarkdownCollection("test-cases"),
       loadMarkdownCollection("checklists"),
     ]);

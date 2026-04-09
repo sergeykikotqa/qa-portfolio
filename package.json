@@ -6,6 +6,8 @@
     "dev": "next dev",
     "cms:proxy": "npx decap-server",
     "dev:cms": "concurrently -k -n web,cms \"npm:dev\" \"npm:cms:proxy\"",
+    "sync:issues": "node scripts/sync-github-issues.mjs",
+    "test:sync-issues": "node --test scripts/sync-github-issues.test.mjs",
     "content:deps": "node scripts/content-deps.mjs",
     "build": "next build",
     "deploy": "gh-pages -d out --dotfiles",

@@ -1,5 +1,6 @@
 import path from "node:path";
 import { readdir, readFile } from "node:fs/promises";
+import { z } from "zod";
 
 import type {
   CollectionEntryMap,
@@ -10,6 +11,8 @@ import { parseMarkdownEntry, ContentValidationError } from "@/lib/content/markdo
 import { markdownCollectionSchemas } from "@/lib/content/schemas";
 
 export const CONTENT_ROOT = path.join(process.cwd(), "content");
+export const BUG_SYNC_DIRECTORY = path.join(CONTENT_ROOT, "bugs-synced");
+export const BUG_OVERRIDE_DIRECTORY = path.join(CONTENT_ROOT, "bug-overrides");
 
 export const MARKDOWN_COLLECTION_DIRECTORIES: Record<
   MarkdownCollectionName,
@@ -32,32 +35,56 @@ function sortFileNames(fileNames: string[]) {
   return [...fileNames].sort((left, right) => left.localeCompare(right));
 }
 
-export async function loadMarkdownCollection<
-  TCollection extends MarkdownCollectionName,
->(collection: TCollection): Promise<CollectionEntryMap[TCollection][]> {
-  const collectionDirectory = MARKDOWN_COLLECTION_DIRECTORIES[collection];
-  const directoryEntries = await readdir(collectionDirectory, { withFileTypes: true });
+type LoadMarkdownDirectoryArgs<TFrontmatter extends { slug: string }> = {
+  collection: string;
+  directory: string;
+  schema: z.ZodType<TFrontmatter>;
+  allowMissingDirectory?: boolean;
+};
+
+export async function loadMarkdownEntriesFromDirectory<
+  TFrontmatter extends { slug: string },
+>({
+  collection,
+  directory,
+  schema,
+  allowMissingDirectory = false,
+}: LoadMarkdownDirectoryArgs<TFrontmatter>): Promise<(TFrontmatter & { body?: string })[]> {
+  let directoryEntries;
+
+  try {
+    directoryEntries = await readdir(directory, { withFileTypes: true });
+  } catch (error) {
+    if (
+      allowMissingDirectory &&
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
+      return [];
+    }
+
+    throw error;
+  }
+
   const fileNames = sortFileNames(
     directoryEntries
       .filter((entry) => entry.isFile() && isMarkdownFile(entry.name))
       .map((entry) => entry.name),
   );
-
-  const schema = markdownCollectionSchemas[
-    collection
-  ] as MarkdownCollectionSchemaMap[TCollection];
-  const entries: CollectionEntryMap[TCollection][] = [];
+  const entries: (TFrontmatter & { body?: string })[] = [];
   const seenSlugs = new Map<string, string>();
 
   for (const fileName of fileNames) {
-    const filePath = path.join(collectionDirectory, fileName);
+    const filePath = path.join(directory, fileName);
     const source = await readFile(filePath, "utf8");
-    const entry = parseMarkdownEntry<CollectionFrontmatterMap[TCollection]>({
+    const entry = parseMarkdownEntry<TFrontmatter>({
       collection,
       filePath,
       source,
       schema,
-    }) as CollectionEntryMap[TCollection];
+    });
 
     const duplicatePath = seenSlugs.get(entry.slug);
 
@@ -73,6 +100,21 @@ export async function loadMarkdownCollection<
   }
 
   return entries;
+}
+
+export async function loadMarkdownCollection<
+  TCollection extends MarkdownCollectionName,
+>(collection: TCollection): Promise<CollectionEntryMap[TCollection][]> {
+  const collectionDirectory = MARKDOWN_COLLECTION_DIRECTORIES[collection];
+  const schema = markdownCollectionSchemas[
+    collection
+  ] as MarkdownCollectionSchemaMap[TCollection];
+
+  return loadMarkdownEntriesFromDirectory<CollectionFrontmatterMap[TCollection]>({
+    collection,
+    directory: collectionDirectory,
+    schema,
+  }) as Promise<CollectionEntryMap[TCollection][]>;
 }
 
 export async function loadMarkdownEntryBySlug<

@@ -1,11 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, FolderKanban, Video } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock3,
+  ExternalLink,
+  FolderKanban,
+  RefreshCw,
+  Video,
+} from "lucide-react";
 
 import type { Bug } from "@/types/content";
 import { BugMetaBadges } from "@/components/bugs/bug-meta-badges";
+import { BugSourceBadge } from "@/components/bugs/bug-source-badge";
 import { MarkdownContent } from "@/components/shared/markdown-content";
+import { formatContentDateTime } from "@/lib/formatters";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type BugDetailViewProps = {
@@ -25,9 +35,12 @@ export function BugDetailView({ bug, projectTitle }: BugDetailViewProps) {
             </Link>
           </Button>
           <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full bg-muted/70 px-3 py-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
-              <FolderKanban className="size-3.5" />
-              <span>{projectTitle}</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-muted/70 px-3 py-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                <FolderKanban className="size-3.5" />
+                <span>{projectTitle}</span>
+              </div>
+              <BugSourceBadge source={bug.source} />
             </div>
             <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-balance md:text-5xl">
               {bug.title}
@@ -35,6 +48,19 @@ export function BugDetailView({ bug, projectTitle }: BugDetailViewProps) {
             <p className="max-w-3xl text-base leading-7 text-muted-foreground md:text-lg">
               {bug.summary}
             </p>
+            {bug.labelsNormalized.length ? (
+              <div className="flex flex-wrap gap-2">
+                {bug.labelsNormalized.map((label) => (
+                  <Badge
+                    key={`${bug.slug}-${label}`}
+                    variant="outline"
+                    className="rounded-full bg-background/80 text-xs text-muted-foreground"
+                  >
+                    {label}
+                  </Badge>
+                ))}
+              </div>
+            ) : null}
           </div>
           <BugMetaBadges
             severity={bug.severity}
@@ -42,6 +68,14 @@ export function BugDetailView({ bug, projectTitle }: BugDetailViewProps) {
             priority={bug.priority}
             publishedAt={bug.publishedAt}
           />
+          {bug.sourceIssueUrl ? (
+            <Button asChild variant="outline" className="w-fit justify-between">
+              <Link href={bug.sourceIssueUrl} target="_blank" rel="noreferrer">
+                Открыть GitHub issue
+                <ExternalLink className="size-4" />
+              </Link>
+            </Button>
+          ) : null}
         </div>
       </section>
 
@@ -90,6 +124,16 @@ export function BugDetailView({ bug, projectTitle }: BugDetailViewProps) {
                     Контекст
                   </h2>
                   <MarkdownContent content={bug.body} />
+                </div>
+              ) : null}
+              {bug.portfolioNote ? (
+                <div className="space-y-3">
+                  <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    Portfolio Note
+                  </h2>
+                  <div className="rounded-2xl bg-emerald-50 p-4 ring-1 ring-emerald-100">
+                    <p className="text-sm leading-7 text-foreground/85">{bug.portfolioNote}</p>
+                  </div>
                 </div>
               ) : null}
             </CardContent>
@@ -149,6 +193,46 @@ export function BugDetailView({ bug, projectTitle }: BugDetailViewProps) {
                 </p>
                 <p className="mt-2 leading-6">{bug.slug}</p>
               </div>
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  Source
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <BugSourceBadge source={bug.source} />
+                  {bug.sourceIssueNumber ? <span>#{bug.sourceIssueNumber}</span> : null}
+                </div>
+              </div>
+              {bug.sourceIssueUrl ? (
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    Original Issue
+                  </p>
+                  <Button asChild variant="outline" size="sm" className="mt-3 w-full justify-between">
+                    <Link href={bug.sourceIssueUrl} target="_blank" rel="noreferrer">
+                      Открыть источник
+                      <ExternalLink className="size-4" />
+                    </Link>
+                  </Button>
+                </div>
+              ) : null}
+              {bug.updatedAt ? (
+                <div className="rounded-2xl bg-muted/50 p-4">
+                  <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <RefreshCw className="size-3.5" />
+                    Updated
+                  </p>
+                  <p className="mt-2 leading-6">{formatContentDateTime(bug.updatedAt)}</p>
+                </div>
+              ) : null}
+              {bug.importedAt ? (
+                <div className="rounded-2xl bg-muted/50 p-4">
+                  <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <Clock3 className="size-3.5" />
+                    Synced At
+                  </p>
+                  <p className="mt-2 leading-6">{formatContentDateTime(bug.importedAt)}</p>
+                </div>
+              ) : null}
             </CardContent>
           </Card>
 

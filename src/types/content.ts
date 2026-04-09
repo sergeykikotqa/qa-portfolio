@@ -74,6 +74,8 @@ export interface RelatedLink {
   url: string;
 }
 
+export type BugSource = "local" | "github";
+
 export interface ProjectFrontmatter {
   title: string;
   slug: string;
@@ -105,9 +107,32 @@ export interface BugFrontmatter {
   videoUrl?: string;
   relatedLinks?: RelatedLink[];
   publishedAt: string;
+  updatedAt?: string;
+  importedAt?: string;
+  source?: BugSource;
+  generated?: boolean;
+  sourceRepo?: string;
+  sourceIssueNumber?: number;
+  sourceIssueUrl?: string;
+  labelsRaw?: string[];
+  labelsNormalized?: string[];
+  portfolioNote?: string;
 }
 
-export type Bug = BugFrontmatter & MarkdownEntryBase;
+export type Bug = BugFrontmatter &
+  MarkdownEntryBase & {
+    source: BugSource;
+    generated: boolean;
+    labelsRaw: string[];
+    labelsNormalized: string[];
+  };
+
+export interface BugOverride {
+  screenshots?: string[];
+  videoUrl?: string;
+  relatedLinks?: RelatedLink[];
+  portfolioNote?: string;
+}
 
 export interface TestCaseFrontmatter {
   title: string;

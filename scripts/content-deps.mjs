@@ -7,6 +7,7 @@ const CONTENT_ROOT = path.join(process.cwd(), "content");
 const COLLECTION_DIRS = {
   projects: path.join(CONTENT_ROOT, "projects"),
   bugs: path.join(CONTENT_ROOT, "bugs"),
+  "bugs-synced": path.join(CONTENT_ROOT, "bugs-synced"),
   "test-cases": path.join(CONTENT_ROOT, "test-cases"),
   checklists: path.join(CONTENT_ROOT, "checklists"),
 };
@@ -44,7 +45,9 @@ function formatEntryList(entries) {
 async function main() {
   const [projects, bugs, testCases, checklists] = await Promise.all([
     loadMarkdownEntries("projects"),
-    loadMarkdownEntries("bugs"),
+    Promise.all([loadMarkdownEntries("bugs"), loadMarkdownEntries("bugs-synced")]).then(
+      ([manualBugs, syncedBugs]) => [...manualBugs, ...syncedBugs],
+    ),
     loadMarkdownEntries("test-cases"),
     loadMarkdownEntries("checklists"),
   ]);

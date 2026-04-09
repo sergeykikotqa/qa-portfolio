@@ -20,7 +20,7 @@ export default async function BugsPage() {
       <SectionHeading
         eyebrow="Bug Reports"
         title="Каталог дефектов, оформленный как рабочая QA-база."
-        description="Страница читает локальный markdown-контент на сервере, а поиск, фильтры и сортировка работают на клиенте с синхронизацией query params."
+        description="Страница объединяет локальные баг-репорты и синхронизированные GitHub issues, а поиск, фильтры и сортировка работают на клиенте с синхронизацией query params."
       />
       <Suspense fallback={null}>
         <BugsExplorer bugs={bugs} projects={projects} />

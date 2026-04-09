@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ExternalLink } from "lucide-react";
 
 import type { Bug } from "@/types/content";
 import { BugMetaBadges } from "@/components/bugs/bug-meta-badges";
+import { BugSourceBadge } from "@/components/bugs/bug-source-badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 type BugCardProps = {
@@ -19,11 +21,25 @@ export function BugCard({ bug, projectTitle }: BugCardProps) {
           <span>{projectTitle}</span>
           <span>•</span>
           <span>{bug.slug}</span>
+          <BugSourceBadge source={bug.source} />
         </div>
         <div className="space-y-2">
           <CardTitle className="text-xl tracking-tight">{bug.title}</CardTitle>
           <p className="text-sm leading-6 text-muted-foreground">{bug.summary}</p>
         </div>
+        {bug.labelsNormalized.length ? (
+          <div className="flex flex-wrap gap-2">
+            {bug.labelsNormalized.map((label) => (
+              <Badge
+                key={`${bug.slug}-${label}`}
+                variant="outline"
+                className="rounded-full bg-background/80 text-[11px] text-muted-foreground"
+              >
+                {label}
+              </Badge>
+            ))}
+          </div>
+        ) : null}
       </CardHeader>
       <CardContent>
         <BugMetaBadges
@@ -31,16 +47,27 @@ export function BugCard({ bug, projectTitle }: BugCardProps) {
           status={bug.status}
           priority={bug.priority}
           publishedAt={bug.publishedAt}
+          showPriority={false}
         />
       </CardContent>
-      <CardFooter className="justify-between gap-4 rounded-b-3xl">
+      <CardFooter className="flex-wrap justify-between gap-4 rounded-b-3xl">
         <p className="line-clamp-1 text-sm text-muted-foreground">{bug.environment}</p>
-        <Button asChild variant="ghost">
-          <Link href={`/bugs/${bug.slug}`}>
-            Подробнее
-            <ArrowUpRight className="size-4" />
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {bug.sourceIssueUrl ? (
+            <Button asChild variant="outline" size="sm">
+              <Link href={bug.sourceIssueUrl} target="_blank" rel="noreferrer">
+                GitHub Issue
+                <ExternalLink className="size-4" />
+              </Link>
+            </Button>
+          ) : null}
+          <Button asChild variant="ghost" size="sm">
+            <Link href={`/bugs/${bug.slug}`}>
+              Подробнее
+              <ArrowUpRight className="size-4" />
+            </Link>
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

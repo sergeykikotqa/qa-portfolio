@@ -7,6 +7,7 @@
 ## Что внутри
 
 - каталог баг-репортов с поиском, фильтрацией и сортировкой
+- build-time синхронизация GitHub Issues в отдельную managed-директорию
 - детальные страницы багов со steps, expected/actual result и вложениями
 - тест-кейсы и чек-листы, сгруппированные по проектам и категориям
 - страница проекта с агрегированными QA-артефактами
@@ -52,6 +53,8 @@ npm run cms:proxy
 
 - [content/projects](C:\Users\adida\Desktop\site\content\projects)
 - [content/bugs](C:\Users\adida\Desktop\site\content\bugs)
+- [content/bugs-synced](C:\Users\adida\Desktop\site\content\bugs-synced)
+- [content/bug-overrides](C:\Users\adida\Desktop\site\content\bug-overrides)
 - [content/test-cases](C:\Users\adida\Desktop\site\content\test-cases)
 - [content/checklists](C:\Users\adida\Desktop\site\content\checklists)
 - [content/updates](C:\Users\adida\Desktop\site\content\updates)
@@ -65,6 +68,8 @@ npm run cms:proxy
 - markdown `body` опционален
 - баги, тест-кейсы и чек-листы должны ссылаться на существующий `project` slug
 - проект нельзя удалять, пока к нему привязаны bugs, test-cases или checklists
+- `content/bugs-synced` полностью управляется sync-скриптом и не предназначен для ручного редактирования
+- `content/bug-overrides/*.json` содержит только presentation-override для synced bugs
 
 ## Decap CMS
 
@@ -89,6 +94,36 @@ npm run content:deps
 - какие проекты свободны
 - какие проекты заблокированы связанными сущностями
 - какие `bugs`, `test-cases` и `checklists` мешают безопасному удалению
+
+## GitHub Issues Sync
+
+Для подтягивания багов из `sergeykikotqa/qa-practice` используйте:
+
+```bash
+$env:GITHUB_TOKEN="your-token"
+npm run sync:issues
+```
+
+Dry-run без записи файлов:
+
+```bash
+$env:GITHUB_TOKEN="your-token"
+npm run sync:issues -- --dry-run
+```
+
+Опционально можно переопределить исходный репозиторий:
+
+```bash
+$env:GITHUB_TOKEN="your-token"
+$env:GITHUB_ISSUES_REPO="owner/repo"
+npm run sync:issues
+```
+
+Скрипт:
+
+- синхронизирует только issues с labels `bug`, `portfolio`, `project:*`, `severity:*`
+- пересобирает только `content/bugs-synced`
+- прерывает запись, если находит hard error в labels, template или managed-директории
 
 ## Deploy To GitHub Pages
 

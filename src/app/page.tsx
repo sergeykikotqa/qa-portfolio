@@ -36,7 +36,7 @@ export default async function HomePage() {
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full bg-muted/70 px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
             <FolderKanban className="size-3.5" />
-            Локальное markdown-портфолио
+            QA portfolio with GitHub sync
           </div>
           <div className="space-y-4">
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
@@ -131,7 +131,7 @@ export default async function HomePage() {
         <SectionHeading
           eyebrow="Practice"
           title={settings.home.featuredProjectsTitle}
-          description="Карточки ниже собираются из локального контента и сразу показывают, сколько связанных артефактов уже есть по каждому проекту."
+          description="Карточки ниже собираются из локального контента и синхронизированных GitHub-артефактов, поэтому сразу показывают полный объём QA-практики по каждому проекту."
         />
         {featuredAggregates.length ? (
           <div className="grid gap-4 xl:grid-cols-3">

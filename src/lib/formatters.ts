@@ -1,6 +1,7 @@
 import { format, parseISO } from "date-fns";
 import { ru } from "date-fns/locale";
 
+import type { BugSource } from "@/types/content";
 import type {
   BugPriority,
   BugSeverity,
@@ -49,8 +50,19 @@ const priorityWeightMap: Record<BugPriority, number> = {
   low: 2,
 };
 
+const sourceLabelMap: Record<BugSource, string> = {
+  local: "Local",
+  github: "GitHub",
+};
+
 export function formatContentDate(value: string, style: "short" | "long" = "short") {
   return format(parseISO(value), style === "long" ? "d MMMM yyyy" : "dd.MM.yyyy", {
+    locale: ru,
+  });
+}
+
+export function formatContentDateTime(value: string) {
+  return format(parseISO(value), "dd.MM.yyyy, HH:mm", {
     locale: ru,
   });
 }
@@ -77,4 +89,8 @@ export function getBugSeverityWeight(value: BugSeverity) {
 
 export function getBugPriorityWeight(value: BugPriority) {
   return priorityWeightMap[value];
+}
+
+export function getBugSourceLabel(value: BugSource) {
+  return sourceLabelMap[value];
 }
