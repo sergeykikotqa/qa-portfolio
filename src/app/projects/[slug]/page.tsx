@@ -56,6 +56,29 @@ export default async function ProjectDetailsPage({
   }
 
   const { project, bugs, testCases, checklists, counts } = aggregate;
+  const projectBugHighlights = project.bugHighlights ?? [];
+  const displayBugCount = projectBugHighlights.length || counts.bugs;
+  const bugPreviewTitle = projectBugHighlights.length
+    ? "Ключевые системные дефекты"
+    : "Связанные баги";
+  const bugPreviewEmptyText = projectBugHighlights.length
+    ? "Для этого проекта пока не оформлены витринные системные дефекты."
+    : "Для этого проекта пока нет связанных баг-репортов.";
+  const bugPreviewItems = projectBugHighlights.length
+    ? projectBugHighlights.map((highlight) => ({
+        title: highlight.title,
+        description: highlight.summary,
+        meta: [
+          getBugSeverityLabel(highlight.severity),
+          highlight.category ?? "Validation",
+        ].join(" • "),
+      }))
+    : bugs.slice(0, 4).map((bug) => ({
+        title: bug.title,
+        description: bug.summary,
+        meta: `${getBugSeverityLabel(bug.severity)} • ${getBugStatusLabel(bug.status)}`,
+        href: `/bugs/${bug.slug}`,
+      }));
 
   return (
     <div className="space-y-10 py-12 md:py-14">
@@ -92,7 +115,15 @@ export default async function ProjectDetailsPage({
       </section>
 
       <section className="grid gap-4 md:grid-cols-4">
-        <StatCard label="Багов" value={String(counts.bugs)} helper="Связанные баг-репорты" />
+        <StatCard
+          label="Багов"
+          value={String(displayBugCount)}
+          helper={
+            projectBugHighlights.length
+              ? "Ключевые системные дефекты для витрины"
+              : "Связанные баг-репорты"
+          }
+        />
         <StatCard label="Тест-кейсов" value={String(counts.testCases)} helper="Формальные сценарии" />
         <StatCard label="Чек-листов" value={String(counts.checklists)} helper="Быстрые проверки" />
         <StatCard
@@ -112,14 +143,9 @@ export default async function ProjectDetailsPage({
 
       <section className="grid gap-8 xl:grid-cols-3">
         <RelatedPreviewList
-          title="Связанные баги"
-          emptyText="Для этого проекта пока нет связанных баг-репортов."
-          items={bugs.slice(0, 4).map((bug) => ({
-            title: bug.title,
-            description: bug.summary,
-            meta: `${getBugSeverityLabel(bug.severity)} • ${getBugStatusLabel(bug.status)}`,
-            href: `/bugs/${bug.slug}`,
-          }))}
+          title={bugPreviewTitle}
+          emptyText={bugPreviewEmptyText}
+          items={bugPreviewItems}
         />
         <RelatedPreviewList
           title="Связанные тест-кейсы"

@@ -76,6 +76,13 @@ export interface RelatedLink {
 
 export type BugSource = "local" | "github";
 
+export interface ProjectBugHighlight {
+  title: string;
+  summary: string;
+  severity: BugSeverity;
+  category?: string;
+}
+
 export interface ProjectFrontmatter {
   title: string;
   slug: string;
@@ -87,6 +94,7 @@ export interface ProjectFrontmatter {
   order: number;
   publishedAt: string;
   videos?: ProjectVideo[];
+  bugHighlights?: ProjectBugHighlight[];
 }
 
 export type Project = ProjectFrontmatter & MarkdownEntryBase;

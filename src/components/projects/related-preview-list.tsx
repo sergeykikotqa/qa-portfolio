@@ -4,7 +4,7 @@ type RelatedPreviewItem = {
   title: string;
   description?: string;
   meta?: string;
-  href: string;
+  href?: string;
 };
 
 type RelatedPreviewListProps = {

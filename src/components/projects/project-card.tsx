@@ -17,6 +17,8 @@ type ProjectCardProps = {
 };
 
 export function ProjectCard({ project, counts }: ProjectCardProps) {
+  const displayBugCount = project.bugHighlights?.length ?? counts.bugs;
+
   return (
     <Card className="rounded-3xl border-border/80 bg-card/90">
       <CardHeader className="space-y-4">
@@ -40,7 +42,7 @@ export function ProjectCard({ project, counts }: ProjectCardProps) {
               <Bug className="size-4" />
               Баги
             </div>
-            <p className="mt-2 text-lg font-semibold">{counts.bugs}</p>
+            <p className="mt-2 text-lg font-semibold">{displayBugCount}</p>
           </div>
           <div className="rounded-2xl bg-muted/70 p-3 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">

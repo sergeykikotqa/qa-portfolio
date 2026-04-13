@@ -11,6 +11,7 @@ import type {
   HomeContent,
   HomeSkill,
   NavigationItem,
+  ProjectBugHighlight,
   ProjectFrontmatter,
   ProjectVideo,
   RelatedLink,
@@ -115,6 +116,13 @@ export const relatedLinkSchema: z.ZodType<RelatedLink> = z.object({
   url: z.url(),
 });
 
+export const projectBugHighlightSchema: z.ZodType<ProjectBugHighlight> = z.object({
+  title: requiredString,
+  summary: requiredString,
+  severity: z.enum(BUG_SEVERITIES),
+  category: requiredString.optional(),
+});
+
 export const projectFrontmatterSchema: z.ZodType<ProjectFrontmatter> = z.object({
   title: requiredString,
   slug: slugSchema,
@@ -126,6 +134,7 @@ export const projectFrontmatterSchema: z.ZodType<ProjectFrontmatter> = z.object(
   order: z.number().int().nonnegative(),
   publishedAt: dateStringSchema,
   videos: z.array(projectVideoSchema).optional(),
+  bugHighlights: z.array(projectBugHighlightSchema).optional(),
 });
 
 export const bugFrontmatterSchema: z.ZodType<BugFrontmatter> = z.object({
