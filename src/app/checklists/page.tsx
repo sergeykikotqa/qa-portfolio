@@ -13,7 +13,7 @@ import { groupBy } from "@/lib/utils";
 export const metadata: Metadata = buildPageMetadata({
   title: "Чек-листы",
   description:
-    "Чек-листы для smoke и exploratory-проверок, которые показывают практический подход к покрытию ключевых зон интерфейса.",
+    "Чек-листы с зафиксированными результатами проверок, собранные на основе test cases и найденных дефектов.",
 });
 
 export default async function ChecklistsPage() {
@@ -30,14 +30,14 @@ export default async function ChecklistsPage() {
     <div className="space-y-10 py-12 md:py-14">
       <SectionHeading
         eyebrow="Чек-листы"
-        title="Чек-листы для быстрых smoke и exploratory-проверок."
-        description="Этот раздел показывает, что я умею быстро собирать практическое покрытие для ключевых зон интерфейса и не терять важные проверки."
+        title="Чек-листы с зафиксированными результатами проверок."
+        description="Этот раздел показывает, что я умею собирать smoke и exploratory-покрытие, а затем фиксировать результат по каждому пункту на основе test cases и найденных дефектов."
       />
 
       <section className="grid gap-4 md:grid-cols-3">
-        <StatCard label="Чек-листов" value={String(checklists.length)} helper="Быстрые проверки в портфолио" />
+        <StatCard label="Чек-листов" value={String(checklists.length)} helper="Фиксированные QA-сводки" />
         <StatCard label="Категорий" value={String(groupedChecklists.length)} helper="Направления проверок" />
-        <StatCard label="Пунктов" value={String(totalItems)} helper="Суммарное покрытие риска" />
+        <StatCard label="Пунктов" value={String(totalItems)} helper="Проверки со статусами" />
       </section>
 
       {groupedChecklists.length ? (

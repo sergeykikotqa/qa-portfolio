@@ -159,13 +159,22 @@ export interface TestCaseFrontmatter {
 
 export type TestCase = TestCaseFrontmatter & MarkdownEntryBase;
 
+export type ChecklistItemStatus = "passed" | "failed" | "not_tested";
+
+export interface ChecklistItem {
+  text: string;
+  status: ChecklistItemStatus;
+  evidence?: string[];
+  note?: string;
+}
+
 export interface ChecklistFrontmatter {
   title: string;
   slug: string;
   project: string;
   category: string;
   description?: string;
-  items: string[];
+  items: ChecklistItem[];
   publishedAt: string;
 }
 

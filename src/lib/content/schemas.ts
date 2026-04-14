@@ -11,6 +11,7 @@ import type {
   HomeContent,
   HomeSkill,
   NavigationItem,
+  ChecklistItem,
   ProjectBugHighlight,
   ProjectFrontmatter,
   ProjectVideo,
@@ -78,6 +79,13 @@ export const heroContentSchema: z.ZodType<HeroContent> = z.object({
 export const homeSkillSchema: z.ZodType<HomeSkill> = z.object({
   title: requiredString,
   description: requiredString,
+});
+
+export const checklistItemSchema: z.ZodType<ChecklistItem> = z.object({
+  text: requiredString,
+  status: z.enum(["passed", "failed", "not_tested"]),
+  evidence: z.array(requiredString).optional(),
+  note: requiredString.optional(),
 });
 
 export const homeContentSchema: z.ZodType<HomeContent> = z.object({
@@ -192,7 +200,7 @@ export const checklistFrontmatterSchema: z.ZodType<ChecklistFrontmatter> = z.obj
   project: slugSchema,
   category: requiredString,
   description: requiredString.optional(),
-  items: z.array(requiredString).min(1),
+  items: z.array(checklistItemSchema).min(1),
   publishedAt: dateStringSchema,
 });
 

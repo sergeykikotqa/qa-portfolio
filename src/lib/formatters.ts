@@ -1,7 +1,7 @@
 import { format, parseISO } from "date-fns";
 import { ru } from "date-fns/locale";
 
-import type { BugSource } from "@/types/content";
+import type { BugSource, ChecklistItemStatus } from "@/types/content";
 import type {
   BugPriority,
   BugSeverity,
@@ -55,6 +55,12 @@ const sourceLabelMap: Record<BugSource, string> = {
   github: "GitHub",
 };
 
+const checklistStatusLabelMap: Record<ChecklistItemStatus, string> = {
+  passed: "Пройдено",
+  failed: "Найден дефект",
+  not_tested: "Не покрыто",
+};
+
 export function formatContentDate(value: string, style: "short" | "long" = "short") {
   return format(parseISO(value), style === "long" ? "d MMMM yyyy" : "dd.MM.yyyy", {
     locale: ru,
@@ -93,4 +99,8 @@ export function getBugPriorityWeight(value: BugPriority) {
 
 export function getBugSourceLabel(value: BugSource) {
   return sourceLabelMap[value];
+}
+
+export function getChecklistStatusLabel(value: ChecklistItemStatus) {
+  return checklistStatusLabelMap[value];
 }

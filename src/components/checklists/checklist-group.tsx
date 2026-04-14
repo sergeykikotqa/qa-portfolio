@@ -1,5 +1,5 @@
 import type { Checklist } from "@/types/content";
-import { ChecklistProgressClient } from "@/components/checklists/checklist-progress-client";
+import { ChecklistCard } from "@/components/checklists/checklist-card";
 
 type ChecklistGroupProps = {
   title: string;
@@ -22,7 +22,7 @@ export function ChecklistGroup({
       </div>
       <div className="grid gap-4">
         {items.map((item) => (
-          <ChecklistProgressClient
+          <ChecklistCard
             key={item.slug}
             checklist={item}
             projectTitle={projectTitles[item.project] ?? item.project}
