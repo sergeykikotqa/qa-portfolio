@@ -57,9 +57,9 @@ export default async function ProjectDetailsPage({
 
   const { project, bugs, testCases, checklists, counts } = aggregate;
   const projectBugHighlights = project.bugHighlights ?? [];
-  const displayBugCount = projectBugHighlights.length || counts.bugs;
+  const displayBugCount = counts.bugs;
   const bugPreviewTitle = projectBugHighlights.length
-    ? "Ключевые дефекты"
+    ? `Ключевые дефекты (${projectBugHighlights.length} из ${counts.bugs})`
     : "Связанные баг-репорты";
   const bugPreviewEmptyText = projectBugHighlights.length
     ? "Для этого проекта пока не оформлены ключевые дефекты для витрины."
@@ -120,7 +120,7 @@ export default async function ProjectDetailsPage({
           value={String(displayBugCount)}
           helper={
             projectBugHighlights.length
-              ? "Ключевые системные дефекты для витрины"
+              ? `Всего найдено ${counts.bugs}; ниже показаны ${projectBugHighlights.length} ключевых системных дефекта`
               : "Связанные баг-репорты"
           }
         />

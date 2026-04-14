@@ -17,7 +17,7 @@ type ProjectCardProps = {
 };
 
 export function ProjectCard({ project, counts }: ProjectCardProps) {
-  const displayBugCount = project.bugHighlights?.length ?? counts.bugs;
+  const displayBugCount = counts.bugs;
 
   return (
     <Card className="rounded-3xl border-border/80 bg-card/90">
