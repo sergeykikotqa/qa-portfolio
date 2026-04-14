@@ -25,6 +25,7 @@ export function TestCaseGroup({ title, description, items }: TestCaseGroupProps)
             summary={item.summary}
             steps={item.steps}
             expectedResult={item.expectedResult}
+            body={item.body}
           />
         ))}
       </div>

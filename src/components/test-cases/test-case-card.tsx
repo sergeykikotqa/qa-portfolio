@@ -1,3 +1,4 @@
+import { MarkdownContent } from "@/components/shared/markdown-content";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type TestCaseCardProps = {
@@ -8,6 +9,7 @@ type TestCaseCardProps = {
   summary?: string;
   steps: string[];
   expectedResult: string;
+  body?: string;
 };
 
 export function TestCaseCard({
@@ -18,6 +20,7 @@ export function TestCaseCard({
   summary,
   steps,
   expectedResult,
+  body,
 }: TestCaseCardProps) {
   return (
     <Card className="rounded-3xl border-border/80 bg-card/90">
@@ -32,7 +35,13 @@ export function TestCaseCard({
         <CardTitle className="text-xl">{title}</CardTitle>
         {summary ? <p className="text-sm leading-6 text-muted-foreground">{summary}</p> : null}
       </CardHeader>
-      <CardContent className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+      <CardContent className="space-y-6">
+        {body ? (
+          <div className="rounded-2xl bg-muted/40 p-4">
+            <MarkdownContent content={body} />
+          </div>
+        ) : null}
+        <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
         <div className="space-y-3">
           <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             Steps
@@ -50,6 +59,7 @@ export function TestCaseCard({
             Expected Result
           </h3>
           <p className="mt-3 text-sm leading-6 text-foreground/85">{expectedResult}</p>
+        </div>
         </div>
       </CardContent>
     </Card>
