@@ -19,7 +19,7 @@ export function SiteFooter({ siteName, footer }: SiteFooterProps) {
         </div>
         <div className="space-y-3">
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground">
-            Stack
+            Фокус
           </p>
           <ul className="space-y-2 text-sm text-muted-foreground">
             {footer.stack.map((item) => (
@@ -29,7 +29,7 @@ export function SiteFooter({ siteName, footer }: SiteFooterProps) {
         </div>
         <div className="space-y-3">
           <p className="font-mono text-xs uppercase tracking-[0.24em] text-muted-foreground">
-            Contacts
+            Контакты
           </p>
           <ul className="space-y-2 text-sm text-muted-foreground">
             {footer.contacts.map((contact) => (

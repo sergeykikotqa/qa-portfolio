@@ -59,10 +59,10 @@ export default async function ProjectDetailsPage({
   const projectBugHighlights = project.bugHighlights ?? [];
   const displayBugCount = projectBugHighlights.length || counts.bugs;
   const bugPreviewTitle = projectBugHighlights.length
-    ? "Ключевые системные дефекты"
-    : "Связанные баги";
+    ? "Ключевые дефекты"
+    : "Связанные баг-репорты";
   const bugPreviewEmptyText = projectBugHighlights.length
-    ? "Для этого проекта пока не оформлены витринные системные дефекты."
+    ? "Для этого проекта пока не оформлены ключевые дефекты для витрины."
     : "Для этого проекта пока нет связанных баг-репортов.";
   const bugPreviewItems = projectBugHighlights.length
     ? projectBugHighlights.map((highlight) => ({
@@ -106,7 +106,7 @@ export default async function ProjectDetailsPage({
             </p>
             <div className="rounded-2xl bg-muted/60 p-4">
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                Testing Scope
+                Что тестировалось
               </p>
               <p className="mt-3 text-sm leading-7 text-foreground/85">{project.scope}</p>
             </div>
@@ -148,7 +148,7 @@ export default async function ProjectDetailsPage({
           items={bugPreviewItems}
         />
         <RelatedPreviewList
-          title="Связанные тест-кейсы"
+          title="Тест-кейсы по проекту"
           emptyText="Для этого проекта пока нет опубликованных тест-кейсов."
           items={testCases.slice(0, 4).map((testCase) => ({
             title: testCase.title,
@@ -158,7 +158,7 @@ export default async function ProjectDetailsPage({
           }))}
         />
         <RelatedPreviewList
-          title="Связанные чек-листы"
+          title="Чек-листы по проекту"
           emptyText="Для этого проекта пока нет чек-листов."
           items={checklists.slice(0, 4).map((checklist) => ({
             title: checklist.title,

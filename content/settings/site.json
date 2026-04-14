@@ -1,12 +1,12 @@
 {
   "siteName": "Сергей Кикоть | QA Portfolio",
-  "siteDescription": "Баг-репорты, тест-кейсы, чек-листы и практика ручного тестирования.",
+  "siteDescription": "Junior QA Engineer (Manual): баг-репорты, тест-кейсы, чек-листы и практические кейсы ручного тестирования веб-приложений.",
   "siteUrl": "https://sergeykikotqa.github.io/qa-portfolio/",
   "locale": "ru-RU",
   "seo": {
     "defaultTitle": "Сергей Кикоть | QA Portfolio",
     "titleTemplate": "%s | Сергей Кикоть | QA Portfolio",
-    "defaultDescription": "Баг-репорты, тест-кейсы, чек-листы и практика ручного тестирования.",
+    "defaultDescription": "Junior QA Engineer (Manual): баг-репорты, тест-кейсы, чек-листы и практические кейсы ручного тестирования веб-приложений.",
     "openGraphImage": "/uploads/og-cover.svg"
   },
   "navigation": [
@@ -17,32 +17,32 @@
   ],
   "hero": {
     "title": "Junior QA Engineer (Manual)",
-    "subtitle": "Тестирую веб-приложения. Оформляю баг-репорты, тест-кейсы и чек-листы.",
-    "ctaLabel": "Смотреть баг-репорты",
-    "ctaHref": "/bugs"
+    "subtitle": "Ищу стажировку или junior-позицию в Manual QA. Тестирую веб-приложения, оформляю баг-репорты, тест-кейсы и чек-листы на реальных публичных сайтах.",
+    "ctaLabel": "Посмотреть проект AGIMA",
+    "ctaHref": "/projects/qamanual"
   },
   "home": {
-    "featuredProjectsTitle": "Практика",
-    "skillsTitle": "Что я умею",
-    "updatesTitle": "Последние обновления",
+    "featuredProjectsTitle": "Ключевой кейс",
+    "skillsTitle": "Что я уже умею",
+    "updatesTitle": "Обновления",
     "skills": [
       {
-        "title": "Баг-репорты",
-        "description": "Фиксирую дефекты с понятным summary, шагами воспроизведения и ожидаемым результатом."
+        "title": "Анализ и оформление дефектов",
+        "description": "Умею замечать проблему, воспроизводить её и описывать так, чтобы команде было понятно, что именно нужно исправить."
       },
       {
-        "title": "Тест-кейсы",
-        "description": "Описываю позитивные и негативные сценарии, чтобы покрытие оставалось воспроизводимым."
+        "title": "Системные проверки",
+        "description": "Составляю тест-кейсы для позитивных и негативных сценариев, чтобы покрытие было понятным и повторяемым."
       },
       {
-        "title": "Чек-листы",
-        "description": "Собираю компактные наборы проверок для smoke, regression и exploratory-сессий."
+        "title": "Быстрое покрытие риска",
+        "description": "Собираю чек-листы для smoke и exploratory-проверок, чтобы быстро проходить ключевые зоны интерфейса."
       }
     ]
   },
   "footer": {
-    "description": "QA-портфолио с практическими артефактами ручного тестирования.",
-    "stack": ["Next.js App Router", "TypeScript", "Tailwind CSS", "shadcn/ui", "Decap CMS"],
+    "description": "Портфолио Junior QA Engineer с практическими артефактами ручного тестирования и контактами для связи.",
+    "stack": ["Валидация форм", "UI / UX", "Мобильное тестирование", "Баг-репорты", "Тестовая документация"],
     "contacts": [
       { "label": "Email", "href": "mailto:sergeykikot.qa@gmail.com" },
       { "label": "Telegram", "href": "https://t.me/SergeykikotQa" },

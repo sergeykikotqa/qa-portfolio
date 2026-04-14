@@ -12,7 +12,7 @@ import { buildPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Тест-кейсы",
   description:
-    "Сгруппированные по проектам тест-кейсы с шагами, expected result и краткими summary.",
+    "Тест-кейсы, которые показывают умение системно покрывать проверки и формализовать сценарии ручного тестирования.",
 });
 
 export default async function TestCasesPage() {
@@ -28,18 +28,18 @@ export default async function TestCasesPage() {
   return (
     <div className="space-y-10 py-12 md:py-14">
       <SectionHeading
-        eyebrow="Test Cases"
-        title="Позитивные и негативные сценарии, сгруппированные по проектам."
-        description="Эта страница остаётся контентно-ориентированной: данные читаются с сервера, а карточки тест-кейсов раскрывают шаги и ожидаемый результат без лишней визуальной перегрузки."
+        eyebrow="Тест-кейсы"
+        title="Тест-кейсы, которые показывают системный подход к проверкам."
+        description="Этот раздел доказывает, что я умею превращать идеи тестирования в понятные пошаговые сценарии с ожидаемым результатом и повторяемым покрытием."
       />
 
       <section className="grid gap-4 md:grid-cols-3">
-        <StatCard label="Всего кейсов" value={String(testCases.length)} helper="Локальная коллекция markdown" />
-        <StatCard label="Проектов" value={String(groups.length)} helper="Покрытых тест-кейсами" />
+        <StatCard label="Всего кейсов" value={String(testCases.length)} helper="Сценарии в портфолио" />
+        <StatCard label="Проектов" value={String(groups.length)} helper="Проекты с формализованными проверками" />
         <StatCard
           label="Категорий"
           value={String(uniqueCategories.size)}
-          helper="Разделов внутри проектов"
+          helper="Ключевые зоны покрытия"
         />
       </section>
 
@@ -57,7 +57,7 @@ export default async function TestCasesPage() {
       ) : (
         <EmptyState
           title="Тест-кейсов пока нет"
-          description="После публикации первых сценариев в коллекции test-cases здесь появится сгруппированный каталог по проектам."
+          description="После добавления первых сценариев здесь появится раздел с формализованными проверками по проектам."
           action={
             <Button asChild variant="ghost">
               <Link href="/">Вернуться на главную</Link>

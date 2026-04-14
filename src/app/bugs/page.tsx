@@ -9,7 +9,7 @@ import { getAllBugs, getAllProjects } from "@/lib/content/queries";
 export const metadata: Metadata = buildPageMetadata({
   title: "Баг-репорты",
   description:
-    "Список баг-репортов с поиском, фильтрацией по severity и status, а также сортировкой по важности.",
+    "Реальные баг-репорты, которые показывают навык анализа, воспроизведения и оформления дефектов в ручном тестировании.",
 });
 
 export default async function BugsPage() {
@@ -18,9 +18,9 @@ export default async function BugsPage() {
   return (
     <div className="space-y-10 py-12 md:py-14">
       <SectionHeading
-        eyebrow="Bug Reports"
-        title="Каталог дефектов, оформленный как рабочая QA-база."
-        description="Страница объединяет локальные баг-репорты и синхронизированные GitHub issues, а поиск, фильтры и сортировка работают на клиенте с синхронизацией query params."
+        eyebrow="Баг-репорты"
+        title="Реальные баг-репорты, которые показывают мой навык анализа и оформления дефектов."
+        description="Этот раздел доказывает, что я умею находить проблему, воспроизводить её, оценивать серьёзность и описывать результат так, чтобы он был понятен команде."
       />
       <Suspense fallback={null}>
         <BugsExplorer bugs={bugs} projects={projects} />

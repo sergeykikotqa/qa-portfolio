@@ -29,6 +29,18 @@ export default async function HomePage() {
   const featuredAggregates = (
     await Promise.all(featuredProjects.map((project) => getProjectAggregate(project.slug)))
   ).filter((entry): entry is ProjectAggregate => entry !== null);
+  const telegramContact = settings.footer.contacts.find(
+    (contact) =>
+      contact.label.toLowerCase().includes("telegram") ||
+      contact.href.toLowerCase().includes("t.me"),
+  );
+  const fallbackContact = settings.footer.contacts.find((contact) =>
+    contact.href.toLowerCase().startsWith("mailto:"),
+  );
+  const secondaryContact = telegramContact ?? fallbackContact;
+  const secondaryCtaLabel = telegramContact ? "Связаться в Telegram" : "Написать мне";
+  const isExternalSecondaryContact =
+    secondaryContact?.href.startsWith("http://") || secondaryContact?.href.startsWith("https://");
 
   return (
     <div className="space-y-16 py-12 md:space-y-20 md:py-16">
@@ -36,7 +48,7 @@ export default async function HomePage() {
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full bg-muted/70 px-3 py-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
             <FolderKanban className="size-3.5" />
-            QA portfolio with GitHub sync
+            Портфолио Junior QA
           </div>
           <div className="space-y-4">
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-balance md:text-6xl">
@@ -53,9 +65,17 @@ export default async function HomePage() {
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
-            <Button asChild variant="ghost" size="lg">
-              <Link href="/test-cases">Открыть тест-кейсы</Link>
-            </Button>
+            {secondaryContact ? (
+              <Button asChild variant="outline" size="lg">
+                <Link
+                  href={secondaryContact.href}
+                  target={isExternalSecondaryContact ? "_blank" : undefined}
+                  rel={isExternalSecondaryContact ? "noreferrer" : undefined}
+                >
+                  {secondaryCtaLabel}
+                </Link>
+              </Button>
+            ) : null}
           </div>
           <div className="flex flex-wrap gap-2">
             {settings.footer.stack.map((item) => (
@@ -69,38 +89,38 @@ export default async function HomePage() {
         <Card className="rounded-[1.75rem] border-border/80 bg-background/85">
           <CardHeader className="space-y-3">
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
-              Focus
+              Что это портфолио показывает
             </p>
             <CardTitle className="text-2xl tracking-tight">
-              Практика ручного тестирования, оформленная как рабочее портфолио.
+              Показываю не только найденные баги, но и аккуратный manual QA-подход.
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-3">
             <div className="rounded-2xl bg-muted/55 p-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Bug className="size-4" />
-                Баг-репорты
+                Формы и валидация
               </div>
               <p className="mt-2 text-sm leading-6 text-foreground/85">
-                Полные карточки дефектов с severity, priority, steps to reproduce и expected/actual result.
+                Проверяю обязательные поля, ошибки ввода и логику отправки на реальных публичных сайтах.
               </p>
             </div>
             <div className="rounded-2xl bg-muted/55 p-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <ListChecks className="size-4" />
-                Тест-кейсы
+                UI/UX и mobile
               </div>
               <p className="mt-2 text-sm leading-6 text-foreground/85">
-                Позитивные и негативные сценарии, сгруппированные по проектам и категориям.
+                Отслеживаю проблемы интерфейса, адаптивности и поведения страниц в мобильной версии.
               </p>
             </div>
             <div className="rounded-2xl bg-muted/55 p-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CheckSquare className="size-4" />
-                Чек-листы
+                QA-документация
               </div>
               <p className="mt-2 text-sm leading-6 text-foreground/85">
-                Компактные smoke и exploratory проверки с локальным прогрессом в браузере.
+                Оформляю баг-репорты, тест-кейсы и чек-листы так, чтобы их было удобно читать команде и работодателю.
               </p>
             </div>
           </CardContent>
@@ -110,9 +130,9 @@ export default async function HomePage() {
       <section className="grid gap-4 md:grid-cols-4">
         <StatCard label="Багов" value={String(stats.totalBugs)} helper="Все зафиксированные дефекты" />
         <StatCard
-          label="Critical"
+          label="Критичных багов"
           value={String(stats.criticalBugs)}
-          helper="Самые рискованные проблемы"
+          helper="Проблемы с самым высоким риском"
           valueClassName="text-red-700"
         />
         <StatCard
@@ -129,9 +149,9 @@ export default async function HomePage() {
 
       <section className="space-y-6">
         <SectionHeading
-          eyebrow="Practice"
+          eyebrow="Проект"
           title={settings.home.featuredProjectsTitle}
-          description="Карточки ниже собираются из локального контента и синхронизированных GitHub-артефактов, поэтому сразу показывают полный объём QA-практики по каждому проекту."
+          description="Начните с кейса AGIMA: в нём собраны баг-репорты, тест-кейсы и чек-листы по одному реальному сайту. Этот раздел быстрее всего показывает мой подход к ручному тестированию."
         />
         {featuredAggregates.length ? (
           <div className="grid gap-4 xl:grid-cols-3">
@@ -153,9 +173,9 @@ export default async function HomePage() {
 
       <section className="space-y-6">
         <SectionHeading
-          eyebrow="Skills"
+          eyebrow="Навыки"
           title={settings.home.skillsTitle}
-          description="Без перегруженного UI: только ключевые компетенции и понятные артефакты, которые можно быстро просмотреть."
+          description="Артефакты на сайте показывают не только результат тестирования, но и то, как я мыслю, документирую проверки и собираю рабочую QA-базу."
         />
         <div className="grid gap-4 lg:grid-cols-3">
           {settings.home.skills.map((skill) => (
@@ -171,25 +191,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="space-y-6">
-        <SectionHeading
-          eyebrow="Updates"
-          title={settings.home.updatesTitle}
-          description="Последние изменения приходят из markdown-коллекции updates, поэтому блок легко поддерживать через контентный workflow."
-        />
-        {updates.length ? (
+      {updates.length ? (
+        <section className="space-y-6">
+          <SectionHeading
+            eyebrow="Обновления"
+            title={settings.home.updatesTitle}
+            description="Короткая история обновлений портфолио и новых артефактов."
+          />
           <div className="grid gap-4 lg:grid-cols-2">
             {updates.slice(0, 4).map((update) => (
               <UpdateCard key={update.slug} update={update} />
             ))}
           </div>
-        ) : (
-          <EmptyState
-            title="Обновлений пока нет"
-            description="Блок оживёт после первой публикации записи в коллекции updates. До этого страница остаётся стабильной и без пустых карточек."
-          />
-        )}
-      </section>
+        </section>
+      ) : null}
     </div>
   );
 }

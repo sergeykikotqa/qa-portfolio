@@ -13,7 +13,7 @@ import { groupBy } from "@/lib/utils";
 export const metadata: Metadata = buildPageMetadata({
   title: "Чек-листы",
   description:
-    "Список QA-чек-листов с accordion layout и локальным прогрессом, который сохраняется в браузере.",
+    "Чек-листы для smoke и exploratory-проверок, которые показывают практический подход к покрытию ключевых зон интерфейса.",
 });
 
 export default async function ChecklistsPage() {
@@ -29,15 +29,15 @@ export default async function ChecklistsPage() {
   return (
     <div className="space-y-10 py-12 md:py-14">
       <SectionHeading
-        eyebrow="Checklists"
-        title="Компактные smoke и exploratory-проверки с локальным прогрессом."
-        description="Каждый чек-лист хранится в markdown, а пользовательские отметки остаются только в браузере через localStorage."
+        eyebrow="Чек-листы"
+        title="Чек-листы для быстрых smoke и exploratory-проверок."
+        description="Этот раздел показывает, что я умею быстро собирать практическое покрытие для ключевых зон интерфейса и не терять важные проверки."
       />
 
       <section className="grid gap-4 md:grid-cols-3">
-        <StatCard label="Чек-листов" value={String(checklists.length)} helper="Всего в портфолио" />
-        <StatCard label="Категорий" value={String(groupedChecklists.length)} helper="Группировка по разделам" />
-        <StatCard label="Пунктов" value={String(totalItems)} helper="Суммарное покрытие проверок" />
+        <StatCard label="Чек-листов" value={String(checklists.length)} helper="Быстрые проверки в портфолио" />
+        <StatCard label="Категорий" value={String(groupedChecklists.length)} helper="Направления проверок" />
+        <StatCard label="Пунктов" value={String(totalItems)} helper="Суммарное покрытие риска" />
       </section>
 
       {groupedChecklists.length ? (
@@ -54,7 +54,7 @@ export default async function ChecklistsPage() {
       ) : (
         <EmptyState
           title="Чек-листов пока нет"
-          description="Когда в коллекции checklists появятся записи, эта страница автоматически покажет их по категориям и сохранит локальный прогресс в браузере."
+          description="Когда появятся первые чек-листы, здесь будет собрана база быстрых smoke и exploratory-проверок по проектам."
           action={
             <Button asChild variant="ghost">
               <Link href="/">Вернуться на главную</Link>
