@@ -26,6 +26,7 @@ function toBug(
     generated: bug.generated ?? fallbackSource === "github",
     labelsRaw: bug.labelsRaw ?? [],
     labelsNormalized: bug.labelsNormalized ?? [],
+    hidden: bug.hidden ?? false,
   };
 }
 
@@ -40,6 +41,7 @@ function applyOverride(bug: Bug, override?: BugOverride): Bug {
     videoUrl: override.videoUrl ?? bug.videoUrl,
     relatedLinks: override.relatedLinks ?? bug.relatedLinks,
     portfolioNote: override.portfolioNote ?? bug.portfolioNote,
+    hidden: override.hidden ?? bug.hidden,
   };
 }
 
@@ -167,5 +169,5 @@ export async function loadMergedBugs(): Promise<Bug[]> {
   return [
     ...manualBugs,
     ...syncedBugs.map((bug) => applyOverride(bug, overrides.get(bug.slug)?.value)),
-  ];
+  ].filter((bug) => !bug.hidden);
 }

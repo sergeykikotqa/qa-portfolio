@@ -125,6 +125,7 @@ export interface BugFrontmatter {
   labelsRaw?: string[];
   labelsNormalized?: string[];
   portfolioNote?: string;
+  hidden?: boolean;
 }
 
 export type Bug = BugFrontmatter &
@@ -133,6 +134,7 @@ export type Bug = BugFrontmatter &
     generated: boolean;
     labelsRaw: string[];
     labelsNormalized: string[];
+    hidden: boolean;
   };
 
 export interface BugOverride {
@@ -140,6 +142,7 @@ export interface BugOverride {
   videoUrl?: string;
   relatedLinks?: RelatedLink[];
   portfolioNote?: string;
+  hidden?: boolean;
 }
 
 export interface TestCaseFrontmatter {

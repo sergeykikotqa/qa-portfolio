@@ -13,4 +13,5 @@ expected: Кнопка должна быть неактивна или форм�
 actual: Кнопка активна и позволяет отправить форму.
 screenshots: []
 publishedAt: 2026-03-27
+hidden: true
 ---

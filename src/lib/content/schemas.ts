@@ -163,6 +163,7 @@ export const bugFrontmatterSchema: z.ZodType<BugFrontmatter> = z.object({
   labelsRaw: z.array(requiredString).default([]),
   labelsNormalized: z.array(requiredString).default([]),
   portfolioNote: requiredString.optional(),
+  hidden: z.boolean().optional(),
 });
 
 export const bugOverrideSchema: z.ZodType<BugOverride> = z.object({
@@ -170,6 +171,7 @@ export const bugOverrideSchema: z.ZodType<BugOverride> = z.object({
   videoUrl: z.url().optional(),
   relatedLinks: z.array(relatedLinkSchema).optional(),
   portfolioNote: requiredString.optional(),
+  hidden: z.boolean().optional(),
 });
 
 export const testCaseFrontmatterSchema: z.ZodType<TestCaseFrontmatter> = z.object({
