@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Bug, CheckSquare, FolderKanban, ListChecks } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Bug, CheckSquare, FolderKanban, ListChecks } from "lucide-react";
 
 import { ProjectCard } from "@/components/projects/project-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { StatCard } from "@/components/shared/stat-card";
 import { UpdateCard } from "@/components/shared/update-card";
+import { formatContentDate } from "@/lib/formatters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +42,8 @@ export default async function HomePage() {
   const secondaryCtaLabel = telegramContact ? "Связаться в Telegram" : "Написать мне";
   const isExternalSecondaryContact =
     secondaryContact?.href.startsWith("http://") || secondaryContact?.href.startsWith("https://");
+  const showcasedProjects = featuredAggregates.slice(0, 3);
+  const latestUpdate = updates[0] ?? null;
 
   return (
     <div className="space-y-16 py-12 md:space-y-20 md:py-16">
@@ -84,45 +87,102 @@ export default async function HomePage() {
               </Badge>
             ))}
           </div>
+          {showcasedProjects.length ? (
+            <div className="space-y-3">
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                Быстрый вход в кейсы
+              </p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {showcasedProjects.map((aggregate) => (
+                  <Link
+                    key={aggregate.project.slug}
+                    href={`/projects/${aggregate.project.slug}`}
+                    className="rounded-2xl border border-border/80 bg-background/80 p-4 transition-colors hover:bg-muted/40"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-1">
+                        <p className="text-sm font-semibold text-foreground">
+                          {aggregate.project.title}
+                        </p>
+                        <p className="text-xs leading-5 text-muted-foreground">
+                          {aggregate.project.shortDescription}
+                        </p>
+                      </div>
+                      <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      {aggregate.counts.bugs} бага • {aggregate.counts.testCases} тест-кейсов •{" "}
+                      {aggregate.counts.checklists} чек-листов
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <Card className="rounded-[1.75rem] border-border/80 bg-background/85">
           <CardHeader className="space-y-3">
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
-              Что это портфолио показывает
+              Сейчас в портфолио
             </p>
             <CardTitle className="text-2xl tracking-tight">
-              Показываю не только найденные баги, но и аккуратный manual QA-подход.
+              Первый экран теперь ведёт в кейсы целиком, а не в один выбранный проект.
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl bg-muted/55 p-4">
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  Кейсов
+                </p>
+                <p className="mt-3 text-3xl font-semibold text-foreground">{featuredAggregates.length}</p>
+                <p className="mt-2 text-sm leading-6 text-foreground/85">
+                  Публичные проекты с артефактами ручного тестирования.
+                </p>
+              </div>
+              <div className="rounded-2xl bg-muted/55 p-4">
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  Последнее обновление
+                </p>
+                <p className="mt-3 text-lg font-semibold text-foreground">
+                  {latestUpdate ? formatContentDate(latestUpdate.date) : "Пока без даты"}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-foreground/85">
+                  {latestUpdate
+                    ? latestUpdate.title
+                    : "Блок обновится автоматически после первой записи в коллекции updates."}
+                </p>
+              </div>
+            </div>
             <div className="rounded-2xl bg-muted/55 p-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Bug className="size-4" />
-                Формы и валидация
+                Формы, mobile, документация
               </div>
               <p className="mt-2 text-sm leading-6 text-foreground/85">
-                Проверяю обязательные поля, ошибки ввода и логику отправки на реальных публичных сайтах.
+                Витрина показывает не один любимый кейс, а текущий набор проектов, дефектов и QA-артефактов, которые уже можно быстро просмотреть работодателю.
               </p>
             </div>
-            <div className="rounded-2xl bg-muted/55 p-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <ListChecks className="size-4" />
-                UI/UX и mobile
+            {showcasedProjects.length ? (
+              <div className="space-y-2">
+                {showcasedProjects.map((aggregate) => (
+                  <Link
+                    key={`hero-summary-${aggregate.project.slug}`}
+                    href={`/projects/${aggregate.project.slug}`}
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-border/80 px-4 py-3 text-sm transition-colors hover:bg-muted/55"
+                  >
+                    <div>
+                      <p className="font-medium text-foreground">{aggregate.project.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {aggregate.counts.bugs} бага • {aggregate.counts.testCases} тест-кейсов
+                      </p>
+                    </div>
+                    <ArrowUpRight className="size-4 shrink-0 text-muted-foreground" />
+                  </Link>
+                ))}
               </div>
-              <p className="mt-2 text-sm leading-6 text-foreground/85">
-                Отслеживаю проблемы интерфейса, адаптивности и поведения страниц в мобильной версии.
-              </p>
-            </div>
-            <div className="rounded-2xl bg-muted/55 p-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CheckSquare className="size-4" />
-                QA-документация
-              </div>
-              <p className="mt-2 text-sm leading-6 text-foreground/85">
-                Оформляю баг-репорты, тест-кейсы и чек-листы так, чтобы их было удобно читать команде и работодателю.
-              </p>
-            </div>
+            ) : null}
           </CardContent>
         </Card>
       </section>
@@ -147,7 +207,7 @@ export default async function HomePage() {
         />
       </section>
 
-      <section className="space-y-6">
+      <section id="projects" className="space-y-6 scroll-mt-24">
         <SectionHeading
           eyebrow="Проекты"
           title={settings.home.featuredProjectsTitle}
