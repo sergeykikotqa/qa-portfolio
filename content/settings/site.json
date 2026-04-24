@@ -18,11 +18,11 @@
   "hero": {
     "title": "Junior QA Engineer (Manual)",
     "subtitle": "Ищу стажировку или junior-позицию в Manual QA. Тестирую веб-приложения, оформляю баг-репорты, тест-кейсы и чек-листы на реальных публичных сайтах.",
-    "ctaLabel": "Посмотреть проект AGIMA",
-    "ctaHref": "/projects/qamanual"
+    "ctaLabel": "Посмотреть кейс AIC",
+    "ctaHref": "/projects/aic"
   },
   "home": {
-    "featuredProjectsTitle": "Ключевой кейс",
+    "featuredProjectsTitle": "Практические кейсы",
     "skillsTitle": "Что я уже умею",
     "updatesTitle": "Обновления",
     "skills": [

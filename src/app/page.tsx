@@ -149,9 +149,9 @@ export default async function HomePage() {
 
       <section className="space-y-6">
         <SectionHeading
-          eyebrow="Проект"
+          eyebrow="Проекты"
           title={settings.home.featuredProjectsTitle}
-          description="Начните с кейса AGIMA: в нём собраны баг-репорты, тест-кейсы и чек-листы по одному реальному сайту. Этот раздел быстрее всего показывает мой подход к ручному тестированию."
+          description="Здесь собраны практические QA-кейсы с баг-репортами, тест-кейсами и чек-листами. Этот раздел быстрее всего показывает мой подход к ручному тестированию, приоритизации дефектов и оформлению артефактов."
         />
         {featuredAggregates.length ? (
           <div className="grid gap-4 xl:grid-cols-3">
